@@ -38,3 +38,5 @@ class Options:
             options_list.pop()
         return options_list
 
+#other ideas: sort by lowest/highest premiems
+
