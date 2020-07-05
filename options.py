@@ -1,9 +1,10 @@
 
 class Options:
 
-    def __init__(self, options_data):
+    def __init__(self, options_data, ticker):
         self.options_data = options_data
         self.options_chain = self.get_options_chain()
+        self.ticker = ticker
 
     #returns a list of 50 options with the highest volume
     def get_options_chain(self):
@@ -27,6 +28,14 @@ class Options:
         while len(options_list) > 25:
             options_list.pop()
         return options_list
+
+    def volume_formatted(self):
+        options = self.chain_sorted_volume()
+        formatted = ""
+        for option in options:
+            formatted += self.ticker + " $" + str(option["strike"]) + " " + \
+                option["type"] + " " + option["expiration Date"] + " Exp"  + " volume: " + str(option["volume"]) 
+        return formatted
  
     #sorts the options chain by highes open interest
     def chain_sorted_OI(self):
