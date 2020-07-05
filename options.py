@@ -31,11 +31,13 @@ class Options:
 
     def volume_formatted(self):
         options = self.chain_sorted_volume()
-        formatted = ""
+        formatted_list = []
         for option in options:
-            formatted += self.ticker + " $" + str(option["strike"]) + " " + \
-                option["type"] + " " + option["expiration Date"] + " Exp"  + " volume: " + str(option["volume"]) 
-        return formatted
+            concise_data = {}
+            concise_data.update(data = "{} ${} {}\nExp: {}".format(self.ticker, option["strike"], option["type"], option["expirationDate"]))
+            concise_data.update(volume = option["volume"])
+            formatted_list.append(concise_data)
+        return formatted_list
  
     #sorts the options chain by highes open interest
     def chain_sorted_OI(self):
