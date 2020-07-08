@@ -3,7 +3,11 @@ from symbols import symbols
 from stock import Stock
 from options import Options
 
-menu_options = ["volume", "open-interest"]
+menu_options = {"volume": "volume_formatted",
+                "open-interest": "open_interest_formatted"}
+
+
+#menu_options = ["volume", "open-interest"]
 
 class tkinterApp(tk.Tk):
     # __init__ function for class tkinterApp
@@ -21,13 +25,13 @@ class tkinterApp(tk.Tk):
 
     # to display the current frame passed as
     # parameter
-    def show_frame(self, page, ticker, detail):
-        if detail == "":
+    def show_frame(self, page, ticker, method):
+        if method == "":
             self.main_frame = tk.Frame(self)
             self.main_frame.place(relwidth=1, relheight=1)
             frame = page(self.main_frame, self)
         else:
-            frame = page(self.main_frame, self, ticker, detail) 
+            frame = page(self.main_frame, self, ticker, method) 
         frame.place(relwidth=1, relheight=1)
         #frame = self.frames[cont]
         frame.tkraise()
@@ -42,8 +46,13 @@ class StartPage(tk.Frame):
         mb.place(relx=0.6, rely=0.09)
         mb.menu = tk.Menu(mb, tearoff=0)
         mb["menu"] = mb.menu
-        mb.menu.add_command(label=menu_options[0], command=lambda: controller.show_frame(OptionsPage, self.ticker, menu_options[0]))
-        mb.menu.add_command(label=menu_options[1], command=lambda: controller.show_frame(OptionsPage, self.ticker, menu_options[1]))
+        #for choice in menu_options.keys():
+       #     mb.menu.add_command(label=choice, command=lambda: controller.show_frame(OptionsPage, self.ticker, menu_options[choice]))
+
+        mb.menu.add_command(label="volume", command=lambda: controller.show_frame(OptionsPage, self.ticker, menu_options["volume"]))
+        mb.menu.add_command(label="open-interest", command=lambda: controller.show_frame(OptionsPage, self.ticker, menu_options["open-interest"]))
+        """mb.menu.add_command(label="volume", command=lambda: controller.show_frame(OptionsPage, self.ticker, menu_options["volume"]))
+        mb.menu.add_command(label=menu_options["open-interest"], command=lambda: controller.show_frame(OptionsPage, self.ticker, menu_options["open-interest"])) """
 
         self.entry = tk.Entry(self, width=20, bg="white")
         self.entry.place(relx=0.5, rely=0.1, anchor='center')
@@ -117,11 +126,15 @@ class ScrollFrame(tk.Frame):
 
 
 class OptionsPage(tk.Frame):
-    def __init__(self, parent, controller, ticker, detail):  #are these, parameters rigth?????
+    def __init__(self, parent, controller, ticker, method):  #are these, parameters rigth?????
         tk.Frame.__init__(self, parent)
-        self.ticker = ticker;
+        self.ticker = ticker
+        self.method = method
         back_button = tk.Button(self, text="Back", command=lambda: controller.show_frame(StartPage, "", ""), padx=10, pady=10)
         back_button.place(relx=0, rely=0)
+
+        reverse_button = tk.Button(self, text="Reverse", command=lambda: self.reverse_order())
+        reverse_button.place(relx=0.15, rely=0.1)
 
         new_frame = tk.Frame(controller, bg="grey")
         new_frame.place(relx=0.5, rely=0.5, relwidth=0.7, relheight=0.7, anchor="center")
@@ -139,19 +152,25 @@ class OptionsPage(tk.Frame):
         """for num in range(1, 26):
             tk.Label(self.scrollFrame.view, text="%s" % num, width=3, borderwidth="1", relief="solid").grid(row=num, column=0)
             tk.Button(self.scrollFrame.view, text="Option contract:$38").grid(row=num, column=1) """
-        self.display_options()
+        self.display_options(False)
 
         # when packing the scrollframe, we pack scrollFrame itself (NOT the viewPort)
         self.scrollFrame.pack(side="top", fill="both", expand=True)
 
-    def display_options(self):
+    def display_options(self, order):
         stock_obj = Stock(self.ticker)
         option_obj = Options(stock_obj.get_options_chain(), self.ticker)
-        formatted_options = option_obj.volume_formatted()
+        sorted_options = getattr(option_obj, self.method)(order)
+        #formatted_options = option_obj.volume_formatted()
         for num in range(1, 26):
             tk.Label(self.scrollFrame.view, text="%s" % num, width=5).grid(row=num, column=0)
-            tk.Button(self.scrollFrame.view, text=formatted_options[num - 1]["data"]).grid(row=num, column=1)
-            tk.Label(self.scrollFrame.view, text="volume: %s" % formatted_options[num - 1]["volume"]).grid(row=num, column=2)
+            tk.Button(self.scrollFrame.view, text=sorted_options[num - 1]["data"]).grid(row=num, column=1)
+            tk.Label(self.scrollFrame.view, text=sorted_options[num - 1]["print_metric"]).grid(row=num, column=2)
+
+    def reverse_order(self):
+        pass
+
+                                
 
     
 
