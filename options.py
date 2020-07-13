@@ -36,6 +36,7 @@ class Options:
             concise_data = {}
             concise_data.update(data = "{} ${} {}\nExp: {}".format(self.ticker, option["strike"], option["type"], option["expirationDate"]))
             concise_data.update(print_metric = "volume: {}".format(option["volume"]))
+            concise_data.update(full_data = option)
             formatted_list.append(concise_data)
         return formatted_list
  
