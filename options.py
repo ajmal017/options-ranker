@@ -29,6 +29,7 @@ class Options:
             options_list.pop()
         return options_list
 
+    #returns a list of formatted strings of option data
     def volume_formatted(self, order):
         options = self.chain_sorted_volume(order)
         formatted_list = []
@@ -49,7 +50,8 @@ class Options:
         while len(options_list) > 25:
             options_list.pop()
         return options_list
-
+    
+    #returns a list of formatted strings of options data 
     def open_interest_formatted(self, order):
         options = self.chain_sorted_OI(order)
         formatted_list = []
