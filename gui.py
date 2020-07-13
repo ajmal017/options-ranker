@@ -6,25 +6,18 @@ from PIL import ImageTk, Image
 
 menu_options = {"volume": "volume_formatted",
                 "open-interest": "open_interest_formatted"}
-#current = {}
 
-#menu_options = ["volume", "open-interest"]
 
 class tkinterApp(tk.Tk):
     # __init__ function for class tkinterApp
     def __init__(self, *args, **kwargs):
         # __init__ function for class Tk
         tk.Tk.__init__(self, *args, **kwargs)
-
         window_h = self.winfo_screenheight()
         window_w = self.winfo_screenwidth()
         self.geometry("%dx%d+0+0" % (window_w, window_h))
         self.main_frame = tk.Frame(self)
         self.main_frame.place(relwidth=1, relheight=1)
-        """background_image = tk.PhotoImage(file="img/back.png")
-        background_label = tk.Label(self, image=background_image)
-        background_label.place(relwidth=1, relheight=1)"""
-
         self.show_frame(StartPage, "",  "")
 
     # to display the current frame passed as
@@ -36,32 +29,28 @@ class tkinterApp(tk.Tk):
             frame = page(self.main_frame, self)
         else:
             frame = page(self.main_frame, self, ticker, method) 
-            #current.update(OptionsPage = frame)
         frame.place(relwidth=1, relheight=1)
-        #frame = self.frames[cont]
         frame.tkraise()
 
 
+#display the start page where user input is taken
 class StartPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-                #Adds menubotton with various options
+        #Adds menubotton with various options
         mb = tk.Menubutton(self, text="Sort options by", width=10)
         mb.place(relx=0.6, rely=0.09)
         mb.menu = tk.Menu(mb, tearoff=0)
         mb["menu"] = mb.menu
-        #for choice in menu_options.keys():
-       #     mb.menu.add_command(label=choice, command=lambda: controller.show_frame(OptionsPage, self.ticker, menu_options[choice]))
-
         mb.menu.add_command(label="volume", command=lambda: controller.show_frame(OptionsPage, self.ticker, menu_options["volume"]))
         mb.menu.add_command(label="open-interest", command=lambda: controller.show_frame(OptionsPage, self.ticker, menu_options["open-interest"]))
-        """mb.menu.add_command(label="volume", command=lambda: controller.show_frame(OptionsPage, self.ticker, menu_options["volume"]))
-        mb.menu.add_command(label=menu_options["open-interest"], command=lambda: controller.show_frame(OptionsPage, self.ticker, menu_options["open-interest"])) """
 
+        #adds entry box for user input
         self.entry = tk.Entry(self, width=20, bg="white")
         self.entry.place(relx=0.5, rely=0.1, anchor='center')
         self.entry.bind('<KeyRelease>', self.on_key_release)
 
+        #listbox for displaying posible stock tickers
         self.listbox = tk.Listbox(self, exportselection=False)
         self.listbox.place(relx=0.5, rely=0.12, anchor='n')
         self.listbox.bind('<<ListboxSelect>>', self.selected)
@@ -91,6 +80,7 @@ class StartPage(tk.Frame):
         for item in data:
             self.listbox.insert('end', item)
 
+    #stores user choice of company/ticker
     def selected(self, event):
         chosen = self.listbox.get(self.listbox.curselection())
         self.entry.delete(0, len(chosen))
@@ -108,7 +98,6 @@ class ScrollFrame(tk.Frame):
         #creates a scrollbar
         self.scroll= tk.Scrollbar(self, orient="vertical", command=self.canvas.yview)
         self.canvas.configure(yscrollcommand=self.scroll.set)
-
         self.scroll.pack(side="right", fill="y")
         self.canvas.pack(side="left", fill="both", expand=True)
         self.canvas_window = self.canvas.create_window((4,4), window=self.view, anchor="nw", tags="self.view")
@@ -128,42 +117,30 @@ class ScrollFrame(tk.Frame):
         canvas_width = event.width
         self.canvas.itemconfig(self.canvas_window, width = canvas_width)            
 
-
+#this page displays 25 the options sort by a specified criteria
 class OptionsPage(tk.Frame):
-    def __init__(self, parent, controller, ticker, method):  #are these, parameters rigth?????
+    def __init__(self, parent, controller, ticker, method): 
         tk.Frame.__init__(self, parent)
         self.ticker = ticker
         self.method = method
         self.parent = parent
         self.controller = controller
+        #back button to return to previous page
         back_button = tk.Button(self, text="Back", command=lambda: controller.show_frame(StartPage, "", ""), padx=10, pady=10)
         back_button.place(relx=0, rely=0)
 
         reverse_button = tk.Button(self, text="Reverse", command=lambda: self.reverse_order())
-        reverse_button.place(relx=0.15, rely=0.1)
-        
-
+        reverse_button.place(relx=0.15, rely=0.1)      
         new_frame = tk.Frame(controller, bg="grey")
         new_frame.place(relx=0.5, rely=0.5, relwidth=0.6, relheight=0.6, anchor="center")
-
-        self.scrollFrame = ScrollFrame(new_frame) # add a new scrollable frame.
-        
-        # Now add some controls to the scrollframe. 
-        # NOTE: the child controls are added to the view port (scrollFrame.viewPort, NOT scrollframe itself)
-        """for row in range(100):
-            a = row
-            tk.Label(self.scrollFrame.view, text="%s" % row, width=3, borderwidth="1", 
-                     relief="solid").grid(row=row, column=0)
-            t="this is the second column for row %s" %row
-            tk.Button(self.scrollFrame.view, text=t, command=lambda x=a: self.printMsg("Hello " + str(x))).grid(row=row, column=1) """
-        """for num in range(1, 26):
-            tk.Label(self.scrollFrame.view, text="%s" % num, width=3, borderwidth="1", relief="solid").grid(row=num, column=0)
-            tk.Button(self.scrollFrame.view, text="Option contract:$38").grid(row=num, column=1) """
+        # add a new scrollable frame.
+        self.scrollFrame = ScrollFrame(new_frame) 
         self.display_options(True)
 
         # when packing the scrollframe, we pack scrollFrame itself (NOT the viewPort)
         self.scrollFrame.pack(side="top", fill="both", expand=True)
 
+    #displays 25 different options as button that can be clicked for more information
     def display_options(self, order):
         stock_obj = Stock(self.ticker)
         option_obj = Options(stock_obj.get_options_chain(), self.ticker)
@@ -180,43 +157,26 @@ class OptionsPage(tk.Frame):
     def reverse_order(self):
         pass
 
+    #displays the new page
     def show_frame(self, page, stock_obj, option):
-        #new_frame = tk.Frame(self, bg="black")
-        #new_frame.place(relwidth=1, relheight=1)
         frame = page(self.controller, stock_obj, option, self.method)
         frame.place(relwidth=1, relheight=1)
         frame.tkraise()
 
-
+#this page displays more data for a single options contract
 class OptionContract(tk.Frame):
     def __init__(self, controller, stock_obj, option, method):
         tk.Frame.__init__(self)
         self.stock_obj = stock_obj
         self.option = option
-        #f = tk.Frame(self)
-        #f.place(relwidth=1, reolheight=1)
-        #canvas = tk.Canvas(self, width=500, height=500)
-                #canvas.grid(row = 0, column=0)
-
-        #image = ImageTk.PhotoImage(Image.open("img/new_background.png"))
-        #canvas.create_image(0,0,image=image)
-        """canvas = tk.Canvas(self)
-        background_image = tk.PhotoImage(file="img/back.png")
-        background_label = tk.Label(canvas, image=background_image)
-        background_label.place(relwidth=1, relheight=1)
-        canvas.pack() """
+        #back button to go to previous page
         back_button = tk.Button(self, text="Bac", command=lambda: controller.show_frame(OptionsPage, stock_obj.get_ticker(), method), padx=10, pady=10)
         back_button.place(relx=0, rely=0)
 
-        """text = tk.Text(self, bg="red")
-        text.insert(tk.INSERT, "hello")
-        text.place(relwidth=.6, relheight=.6) """
         self.options_data()
-        #new_frame = tk.Frame(controller, bg="grey")
-        #new_frame.place(relx=0.5, rely=0.5, relwidth=0.7, relheight=0.7, anchor="center")
 
+    #displays extensive data on a single options contract
     def options_data(self):
-        #option_text = tk.Text(
         text = tk.Text(self, bg="red", font=("Helvetica", 20), padx=20)
         contract_data = """strike price: {}\t\t\t\t\ttype: {}\nbid: {}\t\t\t\t\task: {}\n
                         expiration date: {}\t\t\t\t\timplied volatility: {}
@@ -235,19 +195,9 @@ class OptionContract(tk.Frame):
                             self.option["theta"],
                             self.option["vega"],
                             self.option["rho"])
-
-
-
         text.insert(tk.INSERT, contract_data)
         text.place(relwidth=.6, relheight=.6, relx= 0.5, rely=0.5, anchor="center")
 
-
-
-
-
-                                
-
-    
 
 
 # Driver Code
