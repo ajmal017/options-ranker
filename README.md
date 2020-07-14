@@ -4,4 +4,4 @@ This project was made to ease the search for specific options contracts. You can
 This is useful for determining which contracts have a lot of activity and where people are putting their money.
 
 How to use it: 
-'''python3 gui.py'''
+```python3 gui.py```
