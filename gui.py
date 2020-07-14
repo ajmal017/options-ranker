@@ -177,7 +177,7 @@ class OptionContract(tk.Frame):
 
     #displays extensive data on a single options contract
     def options_data(self):
-        text = tk.Text(self, bg="red", font=("Helvetica", 20), padx=20)
+        text = tk.Text(self, bg="grey", font=("Helvetica", 20), padx=20)
         contract_data = """strike price: {}\t\t\t\t\ttype: {}\nbid: {}\t\t\t\t\task: {}\n
                         expiration date: {}\t\t\t\t\timplied volatility: {}
                         \nvolume: {}\t\t\t\t\topen-interest: {}\n\nGreeks\ndelta: {}\t\t\t\t\tgamma: {}\n
@@ -202,9 +202,9 @@ class OptionContract(tk.Frame):
 
 # Driver Code
 app = tkinterApp()
-canvas = tk.Canvas(app, width=300, height=300)
+"""canvas = tk.Canvas(app, width=300, height=300)
 canvas.grid(row = 0, column=0)
-image = ImageTk.PhotoImage(Image.open("img/new_background.png"))
+image = ImageTk.PhotoImage(Image.open("img/new_background.png"))"""
 
 app.title("Options Ranker")
 app.mainloop()
