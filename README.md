@@ -7,5 +7,6 @@ How to use it:
 * run: ```python3 gui.py```
 
 You can enter a ticker/company and choose from the companies suggested based on your imput, and then choose how you want the Options contracts to be sorted.
+![Screen shot]
 (img/screen1.png)
 
