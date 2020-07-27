@@ -37,6 +37,11 @@ class tkinterApp(tk.Tk):
 class StartPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
+        image = tk.PhotoImage(file="img/new_background.png")
+        label = tk.Label(self, image=image) 
+        label.image = image
+        label.pack()
+
         #Adds menubotton with various options
         mb = tk.Menubutton(self, text="Sort options by", width=10)
         mb.place(relx=0.6, rely=0.09)
@@ -125,12 +130,18 @@ class OptionsPage(tk.Frame):
         self.method = method
         self.parent = parent
         self.controller = controller
+        #place a background
+        image = tk.PhotoImage(file="img/new_background.png")
+        label = tk.Label(self, image=image) 
+        label.image = image
+        label.pack()
+
         #back button to return to previous page
         back_button = tk.Button(self, text="Back", command=lambda: controller.show_frame(StartPage, "", ""), padx=10, pady=10)
         back_button.place(relx=0, rely=0)
 
         reverse_button = tk.Button(self, text="Reverse", command=lambda: self.reverse_order())
-        reverse_button.place(relx=0.15, rely=0.1)      
+        reverse_button.place(relx=0.15, rely=0.15)      
         new_frame = tk.Frame(controller, bg="grey")
         new_frame.place(relx=0.5, rely=0.5, relwidth=0.6, relheight=0.6, anchor="center")
         # add a new scrollable frame.
@@ -145,6 +156,12 @@ class OptionsPage(tk.Frame):
         stock_obj = Stock(self.ticker)
         option_obj = Options(stock_obj.get_options_chain(), self.ticker)
         sorted_options = getattr(option_obj, self.method)(order)
+        #canvas = tk.Canvas(self, width=500, height=500)
+        #canvas.pack()
+        #image = ImageTk.PhotoImage(Image.open("img/new_background.png"))
+        
+        #canvas.create_image(0,0,image=image)
+
         #formatted_options = option_obj.volume_formatted()
         for num in range(1, 26):
             tk.Label(self.scrollFrame.view, text="%s" % num, width=5).grid(row=num, column=0)
@@ -169,18 +186,22 @@ class OptionContract(tk.Frame):
         tk.Frame.__init__(self)
         self.stock_obj = stock_obj
         self.option = option
+        image = tk.PhotoImage(file="img/new_background.png")
+        label = tk.Label(self, image=image) 
+        label.image = image
+        label.pack()
         #back button to go to previous page
-        back_button = tk.Button(self, text="Bac", command=lambda: controller.show_frame(OptionsPage, stock_obj.get_ticker(), method), padx=10, pady=10)
+        back_button = tk.Button(self, text="Back", command=lambda: controller.show_frame(OptionsPage, stock_obj.get_ticker(), method), padx=10, pady=10)
         back_button.place(relx=0, rely=0)
 
         self.options_data()
 
     #displays extensive data on a single options contract
     def options_data(self):
-        text = tk.Text(self, bg="grey", font=("Helvetica", 20), padx=20)
+        text = tk.Text(self, font=("Helvetica", 20), padx=20)
         contract_data = """strike price: {}\t\t\t\t\ttype: {}\nbid: {}\t\t\t\t\task: {}\n
                         expiration date: {}\t\t\t\t\timplied volatility: {}
-                        \nvolume: {}\t\t\t\t\topen-interest: {}\n\nGreeks\ndelta: {}\t\t\t\t\tgamma: {}\n
+                        \nvolume: {}\t\t\t\t\topen-interest: {}\nGreeks\ndelta: {}\t\t\t\t\tgamma: {}\n
                         theta: {}\t\t\t\t\tvega: {}\nrho: {}""".format(
                             self.option["strike"], 
                             self.option["type"], 
@@ -202,9 +223,9 @@ class OptionContract(tk.Frame):
 
 # Driver Code
 app = tkinterApp()
-"""canvas = tk.Canvas(app, width=300, height=300)
+'''canvas = tk.Canvas(app, width=300, height=300)
 canvas.grid(row = 0, column=0)
-image = ImageTk.PhotoImage(Image.open("img/new_background.png"))"""
+image = ImageTk.PhotoImage(Image.open("img/new_background.png")) '''
 
 app.title("Options Ranker")
 app.mainloop()
