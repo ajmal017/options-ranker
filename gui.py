@@ -3,6 +3,8 @@ from symbols import symbols
 from stock import Stock
 from options import Options
 from PIL import ImageTk, Image
+import requests
+from io import BytesIO
 
 menu_options = {"volume": "volume_formatted",
                 "open-interest": "open_interest_formatted"}
@@ -156,6 +158,14 @@ class OptionsPage(tk.Frame):
         stock_obj = Stock(self.ticker)
         option_obj = Options(stock_obj.get_options_chain(), self.ticker)
         sorted_options = getattr(option_obj, self.method)(order)
+
+        #add image of company logo to background
+        response = requests.get(stock_obj.get_logo())
+        company_logo = ImageTk.PhotoImage(Image.open(BytesIO(response.content)))
+        label2 = tk.Label(self, image=company_logo)
+        label2.image = company_logo
+        label2.place(relx=0.5, rely=0, anchor="n")
+
         #canvas = tk.Canvas(self, width=500, height=500)
         #canvas.pack()
         #image = ImageTk.PhotoImage(Image.open("img/new_background.png"))
@@ -190,9 +200,19 @@ class OptionContract(tk.Frame):
         label = tk.Label(self, image=image) 
         label.image = image
         label.pack()
+        
+        #add image of company logo to page
+        response = requests.get(stock_obj.get_logo())
+        company_logo = ImageTk.PhotoImage(Image.open(BytesIO(response.content)))
+        label2 = tk.Label(self, image=company_logo)
+        label2.image = company_logo
+        label2.place(relx=0.5, rely=0, anchor="n")
+        #label2.pack()
+
         #back button to go to previous page
         back_button = tk.Button(self, text="Back", command=lambda: controller.show_frame(OptionsPage, stock_obj.get_ticker(), method), padx=10, pady=10)
         back_button.place(relx=0, rely=0)
+        
 
         self.options_data()
 
@@ -223,9 +243,5 @@ class OptionContract(tk.Frame):
 
 # Driver Code
 app = tkinterApp()
-'''canvas = tk.Canvas(app, width=300, height=300)
-canvas.grid(row = 0, column=0)
-image = ImageTk.PhotoImage(Image.open("img/new_background.png")) '''
-
 app.title("Options Ranker")
 app.mainloop()

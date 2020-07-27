@@ -28,3 +28,7 @@ class Stock:
     #returns the ticker
     def get_ticker(self):
         return self.ticker
+
+    #return company logo (.png)
+    def get_logo(self):
+        return self.profile["logo"]
