@@ -166,12 +166,6 @@ class OptionsPage(tk.Frame):
         label2.image = company_logo
         label2.place(relx=0.5, rely=0, anchor="n")
 
-        #canvas = tk.Canvas(self, width=500, height=500)
-        #canvas.pack()
-        #image = ImageTk.PhotoImage(Image.open("img/new_background.png"))
-        
-        #canvas.create_image(0,0,image=image)
-
         #formatted_options = option_obj.volume_formatted()
         for num in range(1, 26):
             tk.Label(self.scrollFrame.view, text="%s" % num, width=5).grid(row=num, column=0)
@@ -219,9 +213,9 @@ class OptionContract(tk.Frame):
     #displays extensive data on a single options contract
     def options_data(self):
         text = tk.Text(self, font=("Helvetica", 20), padx=20)
-        contract_data = """strike price: {}\t\t\t\t\ttype: {}\nbid: {}\t\t\t\t\task: {}\n
+        contract_data = """strike price: {}\t\t\t\t\ttype: {}\nbid: {}\t\t\t\t\task: {}
                         expiration date: {}\t\t\t\t\timplied volatility: {}
-                        \nvolume: {}\t\t\t\t\topen-interest: {}\nGreeks\ndelta: {}\t\t\t\t\tgamma: {}\n
+                        volume: {}\t\t\t\t\topen-interest: {}\n\nGreeks\ndelta: {}\t\t\t\t\tgamma: {}
                         theta: {}\t\t\t\t\tvega: {}\nrho: {}""".format(
                             self.option["strike"], 
                             self.option["type"], 
