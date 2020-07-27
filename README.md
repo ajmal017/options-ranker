@@ -7,4 +7,7 @@ How to use it:
 * run: ```python3 gui.py```
 
 You can enter a ticker/company and choose from the companies suggested based on your imput, and then choose how you want the Options contracts to be sorted.
-![Screenshot](img/screen1.png)
+![Screenshot1](img/screen1.png)
+A list of 25 option contracts with the highest volume or open interest is displayed. Each contract is represented as a button that can be clicked and will redirect you to a new page that provides more details on that specific Options contract.
+![Screenshot2](img/screen2.png)
+![Screenshot3](img/screen3.png)
